@@ -1,0 +1,25 @@
+adminbot (1.2) lucid-wikimedia; urgency=low
+
+  * Moving the cache file to /var/lib/adminbot
+
+ -- Ryan Lane <rlane@wikimedia.org>  Thu, 14 Jun 2012 15:20:21 +0000
+
+adminbot (1.1) lucid-wikimedia; urgency=low
+
+  * changing install location from /var/lib to /usr/lib
+  * Adding a configuration option for project container location
+
+ -- Ryan Lane <rlane@wikimedia.org>  Fri, 20 Apr 2012 23:17:35 +0000
+
+adminbot (1.0) lucid-wikimedia; urgency=low
+
+  * Changed adminbot.init
+  * other minor changes
+
+ -- Daniel Belin <dbelin@dbelin.net>  Thu, 8 Dec 2011 22:38:28 +0000
+
+adminbot (1.0) lucid-wikimedia; urgency=low
+
+  * Initial package
+
+ -- Daniel Belin <dbelin@dbelin.net>  Thu, 8 Dec 2011 06:26:28 +0000

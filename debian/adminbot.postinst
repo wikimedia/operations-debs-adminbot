@@ -1,0 +1,38 @@
+#!/bin/sh
+
+set -e
+
+if ! getent group adminbot >/dev/null
+then
+	echo Adding group: adminbot
+	addgroup --system adminbot
+fi
+
+if ! getent passwd adminbot >/dev/null
+then
+	echo Adding system user: adminbot
+	adduser --system --ingroup adminbot --home /var/lib/adminbot --shell /bin/false --no-create-home adminbot
+	usermod -c "Adminbot IRC logging sofware" adminbot
+fi
+
+if [ -d /var/lib/adminbot ]
+then
+	chown -R adminbot:adminbot /var/lib/adminbot
+	chmod 750 /var/lib/adminbot
+fi
+
+if [ -d /etc/adminbot ]
+then
+	chown -R root:adminbot /etc/adminbot
+	chmod -R 750 /etc/adminbot
+fi
+
+if [ -d /usr/lib/adminbot ]
+then
+	chown -R adminbot:adminbot /usr/lib/adminbot
+	chmod 755 /usr/lib/adminbot
+	chmod 755 /usr/lib/adminbot/adminlogbot.py
+	chmod 644 /usr/lib/adminbot/adminlog.py
+	chmod 644 /usr/lib/adminbot/statusnet.py
+	chmod 644 /usr/lib/adminbot/README
+fi

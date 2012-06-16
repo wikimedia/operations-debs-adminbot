@@ -1,0 +1,24 @@
+This package was debianized by Daniel Belin <dbelin@dbelin.net> on
+Thu, 8 Dec 2011 06:53:28 +0000.
+
+It was downloaded from http://svn.wikimedia.org/viewvc/mediawiki/trunk/tools/ircecho
+
+Upstream Author(s):
+
+    
+
+Copyright:
+
+    Copyright (C) 2011 
+
+License:
+
+    Unlicensed for adminlogbot.py and adminlog.py (for now)
+    GPL3 for statusnet.py
+
+The Debian packaging is:
+
+    Copyright (C) 2011 Daniel Belin <dbelin@dbelin.net>
+
+and is licensed under the GPL version 2, 
+see `/usr/share/common-licenses/GPL-2'.

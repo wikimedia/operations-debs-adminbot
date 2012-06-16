@@ -1,0 +1,11 @@
+Source: adminbot
+Section: net
+Priority: extra
+Maintainer: Ryan Lane <rlane@wikimedia.org>
+Build-Depends: debhelper (>= 4)
+Standards-Version: 1.0
+
+Package: adminbot
+Depends: python-irclib, python-mwclient
+Architecture: all
+Description: Logging on command for IRC and Mediawiki Software

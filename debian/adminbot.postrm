@@ -1,0 +1,14 @@
+#!/bin/sh
+
+
+if getent passwd adminbot >/dev/null
+then
+	echo "Removing user: adminbot"
+	deluser adminbot
+fi
+
+if getent group adminbot >/dev/null
+then
+	echo "Removing group: adminbot"
+	delgroup adminbot
+fi
