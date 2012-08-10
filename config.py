@@ -44,6 +44,9 @@ wiki_user=""
 # Password of wiki bot user
 wiki_pass=""
 
+# LDAP domain to use, if needed
+wiki_domain=""
+
 # Page to write to; if you have projects enabled, the project is
 # substituted by using "%s". For example:
 #     wiki_page="Nova_Resource:%s/SAL"

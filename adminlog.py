@@ -14,7 +14,7 @@ months=["January","February","March","April","May","June","July","August","Septe
 
 def log(message,project,author):
 	site=mwclient.Site(config.wiki_connection, path=config.wiki_path)
-	site.login(config.wiki_user,config.wiki_pass)
+	site.login(config.wiki_user,config.wiki_pass,domain=config.wiki_domain)
 	if config.enable_projects:
 		project=project.capitalize()
 		pagename=config.wiki_page % project
