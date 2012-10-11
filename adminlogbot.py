@@ -59,7 +59,7 @@ def on_msg(con, event):
 				ds = ldapSupportLib.connect()
 				try:
 					projects = []
-					projectdata = ds.search_s(config.project_rdn + "," + base,ldap.SCOPE_SUBTREE,"(&(cn=*)(owner=*))")
+					projectdata = ds.search_s(config.project_rdn + "," + base,ldap.SCOPE_SUBTREE,"(objectclass=groupofnames)")
 					if not projectdata:
 						server.privmsg(event.target(),"Can't contact LDAP for project list.")
 					for obj in projectdata:
