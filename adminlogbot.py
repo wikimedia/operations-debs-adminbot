@@ -13,13 +13,21 @@ if config.enable_projects:
 	import ldapsupportlib
 
 def on_connect(con, event):
-	con.privmsg(config.nickserv,"identify "+config.nick_password)
+	con.privmsg(config.nickserv,"identify " + config.nick + " " + config.nick_password)
 	time.sleep(1)
 	for target in config.targets:
 		con.join(target)
+	if con.get_nickname() != config.nick:
+		con.privmsg('nickserv', 'ghost %s %s' % (config.nick, config.nick_password))
+
+def on_quit(con, event):
+	source = irclib.nm_to_n(event.source())
+	if source == config.nick:
+		con.nick(config.nick)
 
 def switch_nick(con, event):
 	con.nick(con.get_nickname() + "_")
+	con.privmsg('nickserv', 'ghost %s %s' % (config.nick, config.nick_password))
 
 def on_msg(con, event):
 	if event.target() not in config.targets: return
@@ -93,6 +101,12 @@ server.connect(config.network,config.port,config.nick)
 server.add_global_handler("welcome", on_connect)
 server.add_global_handler("pubmsg",on_msg)
 server.add_global_handler("nicknameinuse",switch_nick)
+server.add_global_handler("nickcollision",switch_nick)
+server.add_global_handler("unavailresource",switch_nick)
+server.add_global_handler("part",on_quit)
+server.add_global_handler("kick",on_quit)
+server.add_global_handler("disconnect",on_quit)
+server.add_global_handler("quit",on_quit)
 
 irc.process_forever()
 
