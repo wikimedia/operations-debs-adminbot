@@ -1,3 +1,11 @@
+adminbot (1.3) lucid-wikimedia; urgency=low
+
+  * Update the project search string
+  * Add events to watch for nick collision
+  * Ghost nick, if in use
+
+ -- Ryan Lane <rlane@wikimedia.org>  Thu, 11 Oct 2012 22:16:41 +0000
+
 adminbot (1.2) lucid-wikimedia; urgency=low
 
   * Moving the cache file to /var/lib/adminbot
