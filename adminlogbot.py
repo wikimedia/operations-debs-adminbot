@@ -3,6 +3,9 @@ import irclib
 import time
 import adminlog
 import sys
+import re
+import json
+import urllib
 sys.path.append('/etc/adminbot')
 import config
 
@@ -29,12 +32,84 @@ def switch_nick(con, event):
 	con.nick(con.get_nickname() + "_")
 	con.privmsg('nickserv', 'ghost %s %s' % (config.nick, config.nick_password))
 
+def get_cloak(source):
+	if re.search("/", source) and re.search("@", source): return source.split("@")[1]
+
+def ask_encode(query):
+	matches = {'[': '-5B', ']': '-5D', ' ': '-20', '|': '/', '=': '%3D', '?': '-3F', '\n': '%0A', '\r': '%0D'}
+	for match,replace in matches.iteritems():
+		query = query.replace(match, replace)
+	return query
+
+def get_query(query):
+	if not query:
+		return {}
+	query = ask_encode(query)
+	url = config.wiki_connection[0] + '://' + config.wiki_connection[1] + config.wiki_query_path + query
+	return get_json_from_url(url)
+
+def get_json_from_url(url):
+	if not url:
+		return {} 
+	f = urllib.urlopen(url)
+	results = f.read()
+	return json.loads(results)
+
+def find_user(author, cloak, user_json):
+	for result in user_json['items']:
+		username = result["label"]
+		usernick = result["irc_nick"][0]
+		usercloak = result["irc_cloak"][0]
+		if author == usernick or cloak == usercloak:
+			return username
+	return ''
+
+def is_stale(cache_filename):
+	if (os.path.exists(cache_filename)):
+		stat = os.stat(cache_filename)
+		now = time.time()
+		mtime = stat.st_mtime
+		if mtime > now - 300:
+			return False
+		else:
+			return True
+	else:
+		return True
+
 def on_msg(con, event):
 	if event.target() not in config.targets: return
-	author,rest=event.source().split('!')
-	if author in config.author_map: author=config.author_map[author]
-	line=event.arguments()[0]
+	author,rest = event.source().split('!')
+	cloak = get_cloak(event.source())
+	if author in config.author_map:
+		author = config.author_map[author]
+	line = event.arguments()[0]
 	if line.startswith("!log "):
+		if config.check_users:
+			cache_filename = '/var/lib/adminbot/user_json.cache'
+			cache_stale = is_stale(cache_filename)
+			if cache_stale:
+				user_json = ''
+				user_json_cache_file = open(cache_filename,'w+')
+				if config.user_query:
+					user_json = get_query(config.user_query)
+				elif config.user_url:
+					user_json = get_json_from_url(config.user_url)
+				user_json_cache_file.write(json.dumps(user_json))
+			else:
+				user_json_cache_file = open(cache_filename,'r')
+				user_json = user_json_cache_file.read()
+				if user_json:
+					user_json = json.loads(user_json)
+				user_json_cache_file.close()
+			username = find_user(author, cloak, user_json)
+			if username:
+				author = "[[" + username + "]]"
+			else:
+				if config.required_users_mode == "warn":
+					server.privmsg(event.target(),"Not a trusted nick or cloak. This is just a warning, for now. Please add your nick or cloak added to the trust list or your user page.")
+				if config.required_users_mode == "error":
+					server.privmsg(event.target(),"Not a trusted nick or cloak. Not logging. Please add your nick or cloak added to the trust list or your user page.")
+					return
 		if config.enable_projects:
 			arr = line.split(" ",2)
 			if len(arr) < 2:
@@ -46,22 +121,14 @@ def on_msg(con, event):
 			undef = arr[0]
 			project = arr[1]
 			cache_filename = '/var/lib/adminbot/project.cache'
-			cache_stale = False
-			if (os.path.exists(cache_filename)):
-				stat = os.stat(cache_filename)
-				now = time.time()
-				mtime = stat.st_mtime
-				if mtime > now - 1800:
-					project_cache_file = open(cache_filename,'rw')
-					project_cache = project_cache_file.read()
-					project_cache_file.close()
-					projects = project_cache.split(',')
-				else:
-					cache_stale = True
-			else:
-				cache_stale = True
+			cache_stale = is_stale(cache_filename)
+			if not cache_stale:
+				project_cache_file = open(cache_filename,'r')
+				project_cache = project_cache_file.read()
+				project_cache_file.close()
+				projects = project_cache.split(',')
 			if cache_stale:
-				project_cache_file = open(cache_filename,'w')
+				project_cache_file = open(cache_filename,'w+')
 				ldapSupportLib = ldapsupportlib.LDAPSupportLib()
 				base = ldapSupportLib.getBase()
 				ds = ldapSupportLib.connect()
