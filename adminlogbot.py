@@ -6,6 +6,8 @@ import sys
 import re
 import json
 import urllib
+from socket import gethostname
+
 sys.path.append('/etc/adminbot')
 import config
 
@@ -83,7 +85,15 @@ def on_msg(con, event):
 	if author in config.author_map:
 		author = config.author_map[author]
 	line = event.arguments()[0]
-	if line.startswith("!log "):
+
+	if line.startswith(config.nick) or line.startswith("!%s" % config.nick) or line == "!log help":
+		try:
+			server.privmsg(event.target(), "I am a logbot running on %s." % gethostname())
+			server.privmsg(event.target(), "Messages are logged to %s." % config.log_url)
+			server.privmsg(event.target(), "To log a message, type !log <msg>.")
+		except:
+			server.privmsg(event.target(), "To log a message, type !log <msg>.")
+	elif line.startswith("!log "):
 		if config.check_users:
 			cache_filename = '/var/lib/adminbot/user_json.cache'
 			cache_stale = is_stale(cache_filename)

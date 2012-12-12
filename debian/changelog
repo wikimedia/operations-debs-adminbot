@@ -1,3 +1,9 @@
+adminbot (1.5) lucid-wikimedia; urgency=low
+
+  * Add a help message identifying where the bot runs and where it logs.
+
+ -- Andrew Bogott <wabogott@wikimedia.org>  Wed, 12 Dec 2012 06:00:00 +0000
+
 adminbot (1.4) lucid-wikimedia; urgency=low
 
   * Change cache time to 5 minutes

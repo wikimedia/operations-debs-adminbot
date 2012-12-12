@@ -53,6 +53,9 @@ wiki_domain=""
 # If projects are disabled, this is just a normal page name.
 wiki_page=""
 
+# Page to visit to view logs -- used by the bot's help message
+log_url=""
+
 # Header depth for dates written
 wiki_header_depth=3
 
