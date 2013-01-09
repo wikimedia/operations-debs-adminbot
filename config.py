@@ -24,7 +24,7 @@ nick_password=""
 network=""
 
 # Port to use when joining network (ex: 6667)
-port=
+port=0
 
 # Map irc nick to real name
 author_map={ "example": "Example User" }

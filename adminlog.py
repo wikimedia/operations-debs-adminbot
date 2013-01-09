@@ -1,18 +1,16 @@
 import mwclient
 import datetime
 import sys
-sys.path.append('/etc/adminbot')
-import config
-
-if config.enable_identica:
-	import statusnet
-
-if config.wiki_category:
-	import re
 
 months=["January","February","March","April","May","June","July","August","September","October","November","December"]
 
-def log(message,project,author):
+def log(config, message,project,author):
+	if config.enable_identica:
+		import statusnet
+
+	if config.wiki_category:
+		import re
+
 	site=mwclient.Site(config.wiki_connection, path=config.wiki_path)
 	site.login(config.wiki_user,config.wiki_pass,domain=config.wiki_domain)
 	if config.enable_projects:
