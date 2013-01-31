@@ -90,7 +90,7 @@ class logbot():
 		cloak = self.get_cloak(event.source())
 		if author in self.config.author_map:
 			author = self.config.author_map[author]
-		line = event.arguments()[0]
+		line = event.arguments()[0].decode("utf8")
 
 		if line.startswith(self.config.nick) or line.startswith("!%s" % self.config.nick) or line == "!log help":
 			logging.debug("'%s' got '%s'; displaying help message." % (self.name, line))
