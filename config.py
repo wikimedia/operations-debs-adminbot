@@ -1,83 +1,83 @@
 # If true, !log <project> <message>
 # If false, !log <message>
-enable_projects=False
+enable_projects = False
 
 # Relative DN of where the projects live
-project_rdn="ou=projects"
+project_rdn = "ou=projects"
 
 # Log messages to identica
-enable_identica=False
+enable_identica = False
 
 # Channels to join
-targets=("", "")
+targets = ("", "")
 
 # Name of nickserv user
-nickserv="nickserv"
+nickserv = "nickserv"
 
 # Nick to use when joining
-nick=""
+nick = ""
 
 # Password to identify with
-nick_password=""
+nick_password = ""
 
 # Network to join (ex: irc.freenode.net)
-network=""
+network = ""
 
 # Port to use when joining network (ex: 6667)
-port=0
+port = 0
 
 # Map irc nick to real name
-author_map={ "example": "Example User" }
+author_map = {"example": "Example User"}
 
 # Map irc nick to title of the user (how the bot addresses the user)
-title_map={ "example": "your exampleness" }
+title_map = {"example": "your exampleness"}
 
 # Scheme and wiki hostname to connect to
-wiki_connection=("https","example.org")
+wiki_connection = ("https", "example.org")
 
 # Url path
-wiki_path="/w/"
+wiki_path = "/w/"
 
 # Username of wiki bot user
-wiki_user=""
+wiki_user = ""
 
 # Password of wiki bot user
-wiki_pass=""
+wiki_pass = ""
 
 # LDAP domain to use, if needed
-wiki_domain=""
+wiki_domain = ""
 
 # Page to write to; if you have projects enabled, the project is
 # substituted by using "%s". For example:
-#     wiki_page="Nova_Resource:%s/SAL"
+#     wiki_page = "Nova_Resource:%s/SAL"
 # If projects are disabled, this is just a normal page name.
-wiki_page=""
+wiki_page = ""
 
 # Page to visit to view logs -- used by the bot's help message
-log_url=""
+log_url = ""
 
 # Header depth for dates written
-wiki_header_depth=3
+wiki_header_depth = 3
 
 # Category the articles should be given
-wiki_category=""
+wiki_category = ""
 
 # username used for connecting with identica
-identica_username=""
+identica_username = ""
 
 # password used for connecting with identica
-identica_password=""
+identica_password = ""
 
 # Check the logger's username or cloak against a trust list
-check_users=False
+check_users = False
 
 # A semantic query to use to search the wiki for a trust list; example:
-#	user_query="[[IRC Nick::+]] or [[IRC Cloak::+]]|?IRC Nick|?IRC Cloak|limit=500|format=json"
-user_query=""
+#	user_query = "[[IRC Nick::+]] or [[IRC Cloak::+]]|?IRC Nick|?IRC Cloak|limit=500|format=json"
+user_query = ""
 
 # The query path URL; example:
-#	wiki_query_path="/wiki/Special:Ask/"
-wiki_query_path=""
+#	wiki_query_path = "/wiki/Special:Ask/"
+wiki_query_path = ""
 
 # Whether we "warn" or "error" if the user isn't in the trust list
-required_users_mode="warn"
+required_users_mode = "warn"

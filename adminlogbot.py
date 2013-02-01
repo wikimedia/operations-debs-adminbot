@@ -13,6 +13,7 @@ import urllib
 
 logging.basicConfig(filename="/var/log/adminbot.log", level=logging.DEBUG)
 
+
 class logbot():
 
 	def __init__(self, name, conf):
@@ -21,14 +22,17 @@ class logbot():
 		self.irc = irclib.IRC()
 
 	def on_connect(self, con, event):
-		con.privmsg(self.config.nickserv,"identify " + self.config.nick + " " + self.config.nick_password)
-		logging.debug("'%s' registering with nick '%s'." % (self.name, self.config.nick))
+		con.privmsg(self.config.nickserv,
+				"identify " + self.config.nick + " " + self.config.nick_password)
+		logging.debug("'%s' registering with nick '%s'." %
+				(self.name, self.config.nick))
 		time.sleep(1)
 		for target in self.config.targets:
 			logging.debug("'%s' joining '%s'." % (self.name, target))
 			con.join(target)
 		if con.get_nickname() != self.config.nick:
-			con.privmsg('nickserv', 'ghost %s %s' % (self.config.nick, self.config.nick_password))
+			con.privmsg('nickserv', 'ghost %s %s' %
+					(self.config.nick, self.config.nick_password))
 
 	def on_quit(self, con, event):
 		source = irclib.nm_to_n(event.source())
@@ -38,14 +42,19 @@ class logbot():
 	def switch_nick(self, con, event):
 		con.nick(con.get_nickname() + "_")
 		logging.debug("'%s' switching nick." % self.name)
-		con.privmsg('nickserv', 'ghost %s %s' % (self.config.nick, self.config.nick_password))
+		con.privmsg('nickserv', 'ghost %s %s' %
+				(self.config.nick, self.config.nick_password))
 
 	def get_cloak(self, source):
-		if re.search("/", source) and re.search("@", source): return source.split("@")[1]
+		if re.search("/", source) and re.search("@", source):
+			return source.split("@")[1]
 
 	def ask_encode(self, query):
-		matches = {'[': '-5B', ']': '-5D', ' ': '-20', '|': '/', '=': '%3D', '?': '-3F', '\n': '%0A', '\r': '%0D'}
-		for match,replace in matches.iteritems():
+		matches = {'[': '-5B', ']': '-5D',
+				' ': '-20', '|': '/',
+				'=': '%3D', '?': '-3F',
+				'\n': '%0A', '\r': '%0D'}
+		for match, replace in matches.iteritems():
 			query = query.replace(match, replace)
 		return query
 
@@ -53,12 +62,14 @@ class logbot():
 		if not query:
 			return {}
 		query = self.ask_encode(query)
-		url = self.config.wiki_connection[0] + '://' + self.config.wiki_connection[1] + self.config.wiki_query_path + query
+		url = "%s://%s%s%s", (self.config.wiki_connection[0],
+				self.config.wiki_connection[1],
+				self.config.wiki_query_path, query)
 		return self.get_json_from_url(url)
 
 	def get_json_from_url(self, url):
 		if not url:
-			return {} 
+			return {}
 		f = urllib.urlopen(url)
 		results = f.read()
 		return json.loads(results)
@@ -85,21 +96,28 @@ class logbot():
 			return True
 
 	def on_msg(self, con, event):
-		if event.target() not in self.config.targets: return
-		author,rest = event.source().split('!')
+		if event.target() not in self.config.targets:
+			return
+		author, rest = event.source().split('!')
 		cloak = self.get_cloak(event.source())
 		if author in self.config.author_map:
 			author = self.config.author_map[author]
 		line = event.arguments()[0].decode("utf8")
 
-		if line.startswith(self.config.nick) or line.startswith("!%s" % self.config.nick) or line == "!log help":
+		if (line.startswith(self.config.nick) or
+				line.startswith("!%s" % self.config.nick) or
+				line == "!log help"):
 			logging.debug("'%s' got '%s'; displaying help message." % (self.name, line))
 			try:
-				self.server.privmsg(event.target(), "I am a logbot running on %s." % gethostname())
-				self.server.privmsg(event.target(), "Messages are logged to %s." % self.config.log_url)
-				self.server.privmsg(event.target(), "To log a message, type !log <msg>.")
+				self.server.privmsg(event.target(),
+						"I am a logbot running on %s." % gethostname())
+				self.server.privmsg(event.target(),
+						"Messages are logged to %s." % self.config.log_url)
+				self.server.privmsg(event.target(),
+						"To log a message, type !log <msg>.")
 			except:
-				self.server.privmsg(event.target(), "To log a message, type !log <msg>.")
+				self.server.privmsg(event.target(),
+						"To log a message, type !log <msg>.")
 		elif line.startswith("!log "):
 			logging.debug("'%s' got '%s'; Attempting to log." % (self.name, line))
 			if self.config.check_users:
@@ -107,14 +125,14 @@ class logbot():
 				cache_stale = self.is_stale(cache_filename)
 				if cache_stale:
 					user_json = ''
-					user_json_cache_file = open(cache_filename,'w+')
+					user_json_cache_file = open(cache_filename, 'w+')
 					if self.config.user_query:
 						user_json = self.get_query(self.config.user_query)
 					elif self.config.user_url:
 						user_json = self.get_json_from_url(self.config.user_url)
 					user_json_cache_file.write(json.dumps(user_json))
 				else:
-					user_json_cache_file = open(cache_filename,'r')
+					user_json_cache_file = open(cache_filename, 'r')
 					user_json = user_json_cache_file.read()
 					if user_json:
 						user_json = json.loads(user_json)
@@ -124,59 +142,72 @@ class logbot():
 					author = "[[" + username + "]]"
 				else:
 					if self.config.required_users_mode == "warn":
-						self.server.privmsg(event.target(),"Not a trusted nick or cloak. This is just a warning, for now. Please add your nick or cloak added to the trust list or your user page.")
+						self.server.privmsg(event.target(),
+						"Not a trusted nick or cloak. This is just a warning, for now."
+						" Please add your nick or cloak added"
+						" to the trust list or your user page.")
 					if self.config.required_users_mode == "error":
-						self.server.privmsg(event.target(),"Not a trusted nick or cloak. Not logging. Please add your nick or cloak added to the trust list or your user page.")
+						self.server.privmsg(event.target(),
+						"Not a trusted nick or cloak. Not logging."
+						" Please add your nick or cloak added"
+						" to the trust list or your user page.")
 						return
 			if self.config.enable_projects:
-				arr = line.split(" ",2)
+				arr = line.split(" ", 2)
 				if len(arr) < 2:
-					self.server.privmsg(event.target(),"Project not found, O.o. Try !log <project> <message> next time.")
+					self.server.privmsg(event.target(),
+							"Project not found, O.o. Try !log <project> <message> next time.")
 					return
 				if len(arr) < 3:
-					self.server.privmsg(event.target(),"Message missing. Nothing logged.")
+					self.server.privmsg(event.target(),
+							"Message missing. Nothing logged.")
 					return
-				undef = arr[0]
 				project = arr[1]
 				cache_filename = '/var/lib/adminbot/%s-project.cache' % self.name
 				cache_stale = self.is_stale(cache_filename)
 				if not cache_stale:
-					project_cache_file = open(cache_filename,'r')
+					project_cache_file = open(cache_filename,
+							'r')
 					project_cache = project_cache_file.read()
 					project_cache_file.close()
 					projects = project_cache.split(',')
 				if cache_stale:
-					project_cache_file = open(cache_filename,'w+')
+					project_cache_file = open(cache_filename, 'w+')
 					ldapSupportLib = ldapsupportlib.LDAPSupportLib()
 					base = ldapSupportLib.getBase()
 					ds = ldapSupportLib.connect()
 					try:
 						projects = []
-						projectdata = ds.search_s(self.config.project_rdn + "," + base,ldap.SCOPE_SUBTREE,"(objectclass=groupofnames)")
+						projectdata = ds.search_s(self.config.project_rdn + "," + base,
+								ldap.SCOPE_SUBTREE, "(objectclass=groupofnames)")
 						if not projectdata:
-							self.server.privmsg(event.target(),"Can't contact LDAP for project list.")
+							self.server.privmsg(event.target(),
+									"Can't contact LDAP for project list.")
 						for obj in projectdata:
 							projects.append(obj[1]["cn"][0])
 						project_cache_file.write(','.join(projects))
 					except Exception:
-						self.server.privmsg(event.target(),"Error reading project list from LDAP.")
+						self.server.privmsg(event.target(),
+								"Error reading project list from LDAP.")
 				if project not in projects:
-					self.server.privmsg(event.target(),project + " is not a valid project.")
+					self.server.privmsg(event.target(),
+							project + " is not a valid project.")
 					return
 				message = arr[2]
 			else:
-				arr = line.split(" ",1)
+				arr = line.split(" ", 1)
 				if len(arr) < 2:
-					self.server.privmsg(event.target(),"Message missing. Nothing logged.")
+					self.server.privmsg(event.target(), "Message missing. Nothing logged.")
 					return
-				undef = arr[0]
 				project = ""
 				message = arr[1]
-			try: 
-				adminlog.log(self.config, message,project,author)
-				if author in self.config.title_map: title = self.config.title_map[author]
-				else: title = "Master"
-				self.server.privmsg(event.target(),"Logged the message, %s" % title)
+			try:
+				adminlog.log(self.config, message, project, author)
+				if author in self.config.title_map:
+					title = self.config.title_map[author]
+				else:
+					title = "Master"
+				self.server.privmsg(event.target(), "Logged the message, %s" % title)
 			except:
 				print sys.exc_info()
 				logging.warning(sys.exc_info)
@@ -193,7 +224,9 @@ class logbot():
 		self.server.add_global_handler("disconnect", self.on_quit)
 		self.server.add_global_handler("quit", self.on_quit)
 
-		self.server.connect(self.config.network,self.config.port,self.config.nick)
+		self.server.connect(self.config.network,
+				self.config.port,
+				self.config.nick)
 
 
 # Enumerate bot configs in /etc/adminbot;
@@ -241,4 +274,3 @@ while True:
 		except:
 			print sys.exc_info()
 			logging.warning(sys.exc_info)
-
