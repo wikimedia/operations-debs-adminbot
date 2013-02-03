@@ -1,3 +1,9 @@
+adminbot (1.6.1) lucid-wikimedia; urgency=low
+
+  * Minor fix to postrm script
+
+ -- Andrew Bogott <wabogott@wikimedia.org>  Sun, 3 Feb 2013 23:59:00 +0000
+
 adminbot (1.6) lucid-wikimedia; urgency=low
 
   * Rewrite in a slightly more OO manner
