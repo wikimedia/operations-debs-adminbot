@@ -1,5 +1,6 @@
 #!/bin/sh
 
+/usr/sbin/service adminbot stop
 
 if getent passwd adminbot >/dev/null
 then
