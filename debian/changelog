@@ -1,3 +1,9 @@
+adminbot (1.6.2) lucid-wikimedia; urgency=low
+
+  * Make !log matching case insensitive
+
+ -- Sam Reed <reedy@wikimedia.org>  Wed, 6 March 2013 20:39:00 +0000
+
 adminbot (1.6.1) lucid-wikimedia; urgency=low
 
   * Minor fix to postrm script

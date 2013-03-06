@@ -106,7 +106,7 @@ class logbot():
 
 		if (line.startswith(self.config.nick) or
 				line.startswith("!%s" % self.config.nick) or
-				line == "!log help"):
+				line.lower() == "!log help"):
 			logging.debug("'%s' got '%s'; displaying help message." % (self.name, line))
 			try:
 				self.server.privmsg(event.target(),
@@ -118,7 +118,7 @@ class logbot():
 			except:
 				self.server.privmsg(event.target(),
 						"To log a message, type !log <msg>.")
-		elif line.startswith("!log "):
+		elif line.lower().startswith("!log "):
 			logging.debug("'%s' got '%s'; Attempting to log." % (self.name, line))
 			if self.config.check_users:
 				cache_filename = '/var/lib/adminbot/%s-users_json.cache' % self.name
