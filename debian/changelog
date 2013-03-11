@@ -1,3 +1,9 @@
+adminbot (1.6.3) lucid-wikimedia; urgency=low
+
+  * Catch exception for talking to a disconnected server
+
+ -- Ryan Lane <rlane@wikimedia.org>  Mon, 11 March 2013 22:53:15 +0000
+
 adminbot (1.6.2) lucid-wikimedia; urgency=low
 
   * Make !log matching case insensitive
