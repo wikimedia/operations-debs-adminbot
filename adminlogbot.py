@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import adminlog
+import argparse
 import imp
 import irclib
 import json
@@ -10,9 +11,6 @@ from socket import gethostname
 import sys
 import time
 import urllib
-
-logging.basicConfig(filename="/var/log/adminbot.log", level=logging.DEBUG)
-
 
 class logbot():
 
@@ -258,27 +256,52 @@ class logbot():
 				self.config.nick)
 
 
-# Enumerate bot configs in /etc/adminbot;
-# Create a logbot object for each.
-sys.path.append('/etc/adminbot')
-confdir = '/etc/adminbot'
-configfiles = os.listdir(confdir)
+parser = argparse.ArgumentParser(description='IRC log bot.',
+		epilog='When run without args it will enumerate bot configs in /etc/adminbot.')
+parser.add_argument('--config', dest='confarg', type=str, help='config file that describes a single logbot')
+args = parser.parse_args()
+
 bots = []
 enable_projects = False
-for fname in configfiles:
+if 'confarg' in args:
+	# Use the one config the user requested.
+	confdir = os.path.dirname(args.confarg)
+	fname = os.path.basename(args.confarg)
 	split = os.path.splitext(fname)
-	if split[1] == ".py":
-		module = split[0]
-		conf = imp.load_source(module, confdir + "/" + fname)
+	module = split[0]
+	conf = imp.load_source(module, confdir + "/" + fname)
 
-		# discard if this isn't actually a bot config file
-		if not 'targets' in conf.__dict__:
-			continue
+	# discard if this isn't actually a bot config file
+	if not 'targets' in conf.__dict__:
+		logging.error("%s does not appear to be a valid bot config." % args.confarg)
+		exit(1)
 
-		bots.append(logbot(module, conf))
+	if ('enable_projects' in conf.__dict__) and conf.enable_projects:
+		enable_projects = True
 
-		if ('enable_projects' in conf.__dict__) and conf.enable_projects:
-			enable_projects = True
+	bots.append(logbot(module, conf))
+	logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+else:
+	# Enumerate bot configs in /etc/adminbot;
+	# Create a logbot object for each.
+	sys.path.append('/etc/adminbot')
+	confdir = '/etc/adminbot'
+	configfiles = os.listdir(confdir)
+	for fname in configfiles:
+		split = os.path.splitext(fname)
+		if split[1] == ".py":
+			module = split[0]
+			conf = imp.load_source(module, confdir + "/" + fname)
+
+			# discard if this isn't actually a bot config file
+			if not 'targets' in conf.__dict__:
+				continue
+
+			bots.append(logbot(module, conf))
+
+			if ('enable_projects' in conf.__dict__) and conf.enable_projects:
+				enable_projects = True
+	logging.basicConfig(filename="/var/log/adminbot.log", level=logging.DEBUG)
 
 if not bots:
 	logging.error("No config files found, so nothing to do.")
