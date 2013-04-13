@@ -310,7 +310,7 @@ if not bots:
 if enable_projects:
 	import os
 	import ldap
-	sys.path.append('/usr/local/lib/user-management')
+	sys.path.append('/usr/local/sbin/')
 	import ldapsupportlib
 
 for bot in bots:

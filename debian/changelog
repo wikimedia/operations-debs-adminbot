@@ -1,3 +1,9 @@
+adminbot (1.7.1) lucid-wikimedia; urgency=low
+
+  * Look for ldapsupportlib in /usr/local/sbin.
+
+ -- Andrew Bogott <abogott@wikimedia.org>  Mon, 15 April 2013 15:24:15 +0000
+
 adminbot (1.7) lucid-wikimedia; urgency=low
 
   * Add --config option for running with grid engine
