@@ -12,6 +12,8 @@ import sys
 import time
 import urllib
 
+import traceback
+
 class logbot():
 
 	def __init__(self, name, conf):
@@ -131,7 +133,11 @@ class logbot():
 		elif line.lower().startswith("!log "):
 			logging.debug("'%s' got '%s'; Attempting to log." % (self.name, line))
 			if self.config.check_users:
-				cache_filename = '/var/lib/adminbot/%s-users_json.cache' % self.name
+				try:
+					cache_filename = '%s/%s-users_json.cache' % (self.config.cachedir, self.name)
+				except AttributeError:
+					cache_filename = '/var/lib/adminbot/%s-users_json.cache' % self.name
+
 				cache_stale = self.is_stale(cache_filename)
 				if cache_stale:
 					user_json = ''
@@ -179,7 +185,10 @@ class logbot():
 				except irclib.ServerNotConnectedError, e:
 					logging.debug("Server connection error when sending message")
 				project = arr[1]
-				cache_filename = '/var/lib/adminbot/%s-project.cache' % self.name
+				try:
+					cache_filename = '%s/%s-users_json.cache' % (self.config.cachedir, self.name)
+				except AttributeError:
+					cache_filename = '/var/lib/adminbot/%s-project.cache' % self.name
 				cache_stale = self.is_stale(cache_filename)
 				if not cache_stale:
 					project_cache_file = open(cache_filename,
@@ -237,6 +246,7 @@ class logbot():
 				except irclib.ServerNotConnectedError, e:
 					logging.debug("Server connection error when sending message")
 			except Exception:
+				traceback.print_exc()
 				logging.warning(sys.exc_info)
 
 	def connect(self):
@@ -323,4 +333,5 @@ while True:
 		try:
 			bot.irc.process_once()
 		except:
+			traceback.print_exc()
 			logging.warning(sys.exc_info)
