@@ -72,7 +72,8 @@ identica_password = ""
 check_users = False
 
 # A semantic query to use to search the wiki for a trust list; example:
-#	user_query = "[[IRC Nick::+]] or [[IRC Cloak::+]]|?IRC Nick|?IRC Cloak|limit=500|format=json"
+#	user_query = ("[[IRC Nick::+]] or [[IRC Cloak::+]]|?IRC Nick|?IRC Cloak
+#                 "|limit=500|format=json")
 user_query = ""
 
 # The query path URL; example:
