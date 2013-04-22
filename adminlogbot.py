@@ -3,6 +3,7 @@ import adminlog
 import argparse
 import imp
 import irclib
+import ircbot
 import json
 import logging
 import os
@@ -15,47 +16,18 @@ import urllib
 import traceback
 
 
-class logbot():
-    def __init__(self, name, conf):
+class logbot(ircbot.SingleServerIRCBot):
+    def __init__(self, name, config):
+        self.config = config
         self.name = name
-        self.config = conf
-        self.irc = irclib.IRC()
+        sasl_password = config.nick + ':' + config.nick_password
+        server = [config.network, config.port, sasl_password]
+        ircbot.SingleServerIRCBot.__init__(self, [server], config.nick,
+                config.nick)
 
-    def on_connect(self, con, event):
-        try:
-            con.privmsg(self.config.nickserv,
-                        "identify " + self.config.nick + " "
-                        + self.config.nick_password)
-        except irclib.ServerNotConnectedError, e:
-            logging.debug("Error identifying user")
-        logging.debug("'%s' registering with nick '%s'." %
-                      (self.name, self.config.nick))
-        time.sleep(1)
-        for target in self.config.targets:
-            logging.debug("'%s' joining '%s'." % (self.name, target))
-            con.join(target)
-        if con.get_nickname() != self.config.nick:
-            try:
-                con.privmsg('nickserv', 'ghost %s %s' %
-                                        (self.config.nick,
-                                         self.config.nick_password))
-            except irclib.ServerNotConnectedError, e:
-                logging.debug("Error ghosting user")
-
-    def on_quit(self, con, event):
-        source = irclib.nm_to_n(event.source())
-        if source == self.config.nick:
-            con.nick(self.config.nick)
-
-    def switch_nick(self, con, event):
-        con.nick(con.get_nickname() + "_")
-        logging.debug("'%s' switching nick." % self.name)
-        try:
-            con.privmsg('nickserv', 'ghost %s %s' %
-                                    (self.config.nick,
-                                     self.config.nick_password))
-        except irclib.ServerNotConnectedError, e:
-            logging.debug("Error ghosting user")
+    def connect(self, *args, **kwargs):
+        kwargs.update(ssl=True)
+        ircbot.SingleServerIRCBot.connect(self, *args, **kwargs)
 
     def get_cloak(self, source):
         if re.search("/", source) and re.search("@", source):
@@ -107,14 +79,18 @@ class logbot():
         else:
             return True
 
-    def on_msg(self, con, event):
+    def on_welcome(self, con, event):
+        for target in self.config.targets:
+            con.join(target)
+
+    def on_pubmsg(self, con, event):
         if event.target() not in self.config.targets:
             return
         author, rest = event.source().split('!')
         cloak = self.get_cloak(event.source())
         if author in self.config.author_map:
             author = self.config.author_map[author]
-        line = event.arguments()[0].decode("utf8")
+        line = event.arguments()[0].decode("utf8", "replace")
 
         if (line.startswith(self.config.nick) or
                 line.startswith("!%s" % self.config.nick) or
@@ -122,17 +98,17 @@ class logbot():
             logging.debug("'%s' got '%s'; displaying help message." %
                           (self.name, line))
             try:
-                self.server.privmsg(event.target(),
+                self.connection.privmsg(event.target(),
                                     "I am a logbot running on %s." %
                                     gethostname())
-                self.server.privmsg(event.target(),
+                self.connection.privmsg(event.target(),
                                     "Messages are logged to %s." %
                                     self.config.log_url)
-                self.server.privmsg(event.target(),
+                self.connection.privmsg(event.target(),
                                     "To log a message, type !log <msg>.")
             except Exception:
                 try:
-                    self.server.privmsg(event.target(),
+                    self.connection.privmsg(event.target(),
                                         "To log a message, type !log <msg>.")
                 except irclib.ServerNotConnectedError, e:
                     logging.debug("Server connection error "
@@ -170,7 +146,7 @@ class logbot():
                 else:
                     try:
                         if self.config.required_users_mode == "warn":
-                            self.server.privmsg(event.target(),
+                            self.connection.privmsg(event.target(),
                                                 "Not a trusted nick or cloak."
                                                 " This is just a warning,"
                                                 " for now."
@@ -179,7 +155,7 @@ class logbot():
                                                 " to the trust list"
                                                 " or your user page.")
                         if self.config.required_users_mode == "error":
-                            self.server.privmsg(event.target(),
+                            self.connection.privmsg(event.target(),
                                                 "Not a trusted nick"
                                                 " or cloak. Not logging."
                                                 " Please add your nick"
@@ -194,12 +170,12 @@ class logbot():
                 arr = line.split(" ", 2)
                 try:
                     if len(arr) < 2:
-                        self.server.privmsg(event.target(),
+                        self.connection.privmsg(event.target(),
                                             "Project not found, O.o. Try !log"
                                             " <project> <message> next time.")
                         return
                     if len(arr) < 3:
-                        self.server.privmsg(event.target(),
+                        self.connection.privmsg(event.target(),
                                             "Message missing. Nothing logged.")
                         return
                 except irclib.ServerNotConnectedError, e:
@@ -231,7 +207,7 @@ class logbot():
                                                   ldap.SCOPE_SUBTREE,
                                                   "(objectclass=groupofnames)")
                         if not projectdata:
-                            self.server.privmsg(event.target(),
+                            self.connection.privmsg(event.target(),
                                                 "Can't contact LDAP"
                                                 " for project list.")
                         for obj in projectdata:
@@ -239,7 +215,7 @@ class logbot():
                         project_cache_file.write(','.join(projects))
                     except Exception:
                         try:
-                            self.server.privmsg(event.target(),
+                            self.connection.privmsg(event.target(),
                                                 "Error reading project"
                                                 " list from LDAP.")
                         except irclib.ServerNotConnectedError, e:
@@ -247,7 +223,7 @@ class logbot():
                                           " when sending message")
                 if project not in projects:
                     try:
-                        self.server.privmsg(event.target(),
+                        self.connection.privmsg(event.target(),
                                             project +
                                             " is not a valid project.")
                     except irclib.ServerNotConnectedError, e:
@@ -259,7 +235,7 @@ class logbot():
                 arr = line.split(" ", 1)
                 if len(arr) < 2:
                     try:
-                        self.server.privmsg(event.target(),
+                        self.connection.privmsg(event.target(),
                                             "Message missing. Nothing logged.")
                     except irclib.ServerNotConnectedError, e:
                         logging.debug("Server connection error"
@@ -274,30 +250,13 @@ class logbot():
                 else:
                     title = "Master"
                 try:
-                    self.server.privmsg(event.target(),
+                    self.connection.privmsg(event.target(),
                                         "Logged the message, %s" % title)
                 except irclib.ServerNotConnectedError, e:
                     logging.debug("Server connection error"
                                   " when sending message")
             except Exception:
-                traceback.print_exc()
-                logging.warning(sys.exc_info)
-
-    def connect(self):
-        self.server = self.irc.server()
-        self.server.add_global_handler("welcome", self.on_connect)
-        self.server.add_global_handler("pubmsg", self.on_msg)
-        self.server.add_global_handler("nicknameinuse", self.switch_nick)
-        self.server.add_global_handler("nickcollision", self.switch_nick)
-        self.server.add_global_handler("unavailresource", self.switch_nick)
-        self.server.add_global_handler("part", self.on_quit)
-        self.server.add_global_handler("kick", self.on_quit)
-        self.server.add_global_handler("disconnect", self.on_quit)
-        self.server.add_global_handler("quit", self.on_quit)
-
-        self.server.connect(self.config.network,
-                            self.config.port,
-                            self.config.nick)
+                logging.exception('Failed to log message')
 
 
 parser = argparse.ArgumentParser(description='IRC log bot.',
@@ -310,7 +269,7 @@ args = parser.parse_args()
 
 bots = []
 enable_projects = False
-if 'confarg' in args:
+if args.confarg is not None:
     # Use the one config the user requested.
     confdir = os.path.dirname(args.confarg)
     fname = os.path.basename(args.confarg)
@@ -364,13 +323,11 @@ if enable_projects:
 
 for bot in bots:
     logging.debug("'%s' starting" % bot.name)
-    bot.connect()
+    bot._connect()
 
 while True:
-    time.sleep(.1)
     for bot in bots:
         try:
-            bot.irc.process_once()
+            bot.ircobj.process_once(timeout=0.1)
         except:
-            traceback.print_exc()
-            logging.warning(sys.exc_info)
+            logging.exception('Died in main event loop')

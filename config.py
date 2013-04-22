@@ -23,7 +23,7 @@ nick_password = ""
 # Network to join (ex: irc.freenode.net)
 network = ""
 
-# Port to use when joining network (ex: 6667)
+# Port to use when joining network (ex: 7000). Should support SSL.
 port = 0
 
 # Map irc nick to real name
