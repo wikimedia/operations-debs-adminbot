@@ -1,3 +1,9 @@
+adminbot (1.7.3) lucid-wikimedia; urgency=low
+
+  * Convert to use ircbot.SingleServerIRCBot
+
+ -- Andrew Bogott <abogott@wikimedia.org>  Mon, 14 May 2013 00:03:15 +0000
+
 adminbot (1.7.2) lucid-wikimedia; urgency=low
 
   * Added configurable cachedir
