@@ -2,11 +2,12 @@ Source: adminbot
 Section: net
 Priority: extra
 Maintainer: Ryan Lane <rlane@wikimedia.org>
-Build-Depends: debhelper (>= 9)
+Build-Depends: debhelper (>= 9), python | python-all | python-dev | python-all-dev
 Standards-Version: 3.9.3.1
 
 Package: adminbot
-Depends: python-irclib, python-mwclient
+Pre-Depends: adduser
+Depends: ${misc:Depends}, ${python:Depends}, python-irclib, python-mwclient, python-simplejson
 Recommends: python-twitter
 Architecture: all
 Description: Logging on command for IRC and Mediawiki Software

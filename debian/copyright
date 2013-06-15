@@ -1,24 +1,51 @@
-This package was debianized by Daniel Belin <dbelin@dbelin.net> on
-Thu, 8 Dec 2011 06:53:28 +0000.
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+License: GPL-3.0+
 
-It was downloaded from http://svn.wikimedia.org/viewvc/mediawiki/trunk/tools/ircecho
+Files: *
+Copyright: Andrew Bogott <ABogott@wikimedia.org>
+ Antoine Musso <hashar@free.fr>
+ Kunal Mehta <legoktm@gmail.com>
+ Ori Livneh <ori@wikimedia.org>
+ Reedy <reedy@wikimedia.org>
+ Ryan Lane <rlane@wikimedia.org>
+License: GPL-3.0+
 
-Upstream Author(s):
+Files: debian/*
+Copyright: 2013 Carl Fürstenberg <azatoth@gmail.com>
+ 2013 Andrew Bogott <ABogott@wikimedia.org>
+ 2013 Reedy <reedy@wikimedia.org>
+ 2013 Ryan Lane <rlane@wikimedia.org>
+License: GPL-3.0+
 
-    
+Files: adminbot.py
+Copyright: 2013 Kunal Mehta <legoktm@gmail.com>
+ 2013 Reedy <reedy@wikimedia.org>
+ 2012-2013 Andrew Bogott <ABogott@wikimedia.org>
+ 2012-2013 Ryan Lane <rlane@wikimedia.org>
+License: GPL-3.0+
 
-Copyright:
+Files: adminlog.py
+Copyright: 2012-2013 Ryan Lane <rlane@wikimedia.org>
+ 2013 Andrew Bogott <ABogott@wikimedia.org>
+ 2013 Ori Livneh <ori@wikimedia.org>
+License: GPL-3.0+
 
-    Copyright (C) 2011 
+License: GPL-3.0+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
 
-License:
+License: GPL-3.0+
 
-    Unlicensed for adminlogbot.py and adminlog.py (for now)
-    GPL3 for statusnet.py
-
-The Debian packaging is:
-
-    Copyright (C) 2011 Daniel Belin <dbelin@dbelin.net>
-
-and is licensed under the GPL version 2, 
-see `/usr/share/common-licenses/GPL-2'.

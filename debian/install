@@ -1,5 +1,4 @@
 adminlogbot.py /usr/lib/adminbot
 adminlog.py /usr/lib/adminbot
 statusnet.py /usr/lib/adminbot
-README /usr/lib/adminbot
 config.py /etc/adminbot
