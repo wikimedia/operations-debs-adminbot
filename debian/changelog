@@ -1,3 +1,16 @@
+adminbot (1.7.4) precise-wikimedia; urgency=low
+
+  [ Ori Livneh ]
+  * Auto-link SHA1s and Gerrit change IDs
+  * Enable logging to Twitter via Twitter API v1.1
+
+  [ Faidon Liambotis ]
+  * Release for precise.
+  * Add Recommends: python-twitter.
+  * Bump Build-Depends debhelper & compat to 9.
+
+ -- Faidon Liambotis <faidon@wikimedia.org>  Sun, 23 Jun 2013 07:44:26 +0300
+
 adminbot (1.7.3) lucid-wikimedia; urgency=low
 
   * Convert to use ircbot.SingleServerIRCBot
