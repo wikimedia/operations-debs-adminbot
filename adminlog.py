@@ -56,10 +56,15 @@ def log(config, message, project, author):
 					config.wiki_category + ']]</noinclude>')
 	page.save('\n'.join(lines), "%s (%s)" % (message, author))
 
+	micro_update = ("%s: %s" % (author, message))[:140]
+
 	if config.enable_identica:
 		snapi = statusnet.StatusNet({'user': config.identica_username,
 			'passwd': config.identica_password,
 			'api': 'https://identi.ca/api'})
-		snupdate = "%s: %s" % (author, message)
-		snupdate = snupdate[:140]  # Trim message
-		snapi.update(snupdate)
+		snapi.update(micro_update)
+
+	if config.enable_twitter:
+		import twitter
+		twitter_api = twitter.Api(**config.twitter_api_params)
+		twitter_api.PostUpdate(micro_update)

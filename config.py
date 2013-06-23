@@ -8,6 +8,23 @@ project_rdn = "ou=projects"
 # Log messages to identica
 enable_identica = False
 
+# Log messages to Twitter
+enable_twitter = False
+
+# OAuth settings and access tokens for the Twitter API
+# To obtain these tokens, go to <https://dev.twitter.com/apps> and sign in.
+# Click 'Create a new application' and fill out the form. Leave 'Callback URL'
+# unspecified. When you've created your application, click 'Settings',
+# change 'Application Type' to 'Read and Write', and click 'Update this Twitter
+# application's settings'. Finally, go back to the 'Details' tab and click
+# 'Create my access token'.
+twitter_api_params = {
+	'access_token_key': 'NNNNNNNNNN-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+	'access_token_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+	'consumer_key': 'XXXXXXXXXXXXXXXXXXXXX',
+	'consumer_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+}
+
 # Channels to join
 targets = ("", "")
 
