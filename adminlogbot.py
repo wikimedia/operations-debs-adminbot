@@ -16,6 +16,8 @@ import urllib
 import traceback
 
 
+LOG_FORMAT = "%(asctime)-15s %(levelname)s: %(message)s"
+
 class logbot(ircbot.SingleServerIRCBot):
     def __init__(self, name, config):
         self.config = config
@@ -287,7 +289,8 @@ if args.confarg is not None:
         enable_projects = True
 
     bots.append(logbot(module, conf))
-    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
+                        format=LOG_FORMAT)
 else:
     # Enumerate bot configs in /etc/adminbot;
     # Create a logbot object for each.
@@ -308,7 +311,8 @@ else:
 
             if ('enable_projects' in conf.__dict__) and conf.enable_projects:
                 enable_projects = True
-    logging.basicConfig(filename="/var/log/adminbot.log", level=logging.DEBUG)
+    logging.basicConfig(filename="/var/log/adminbot.log", level=logging.DEBUG,
+                        format=LOG_FORMAT)
 
 if not bots:
     logging.error("No config files found, so nothing to do.")
