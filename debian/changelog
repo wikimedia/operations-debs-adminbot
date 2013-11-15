@@ -1,3 +1,9 @@
+adminbot (1.7.5) precise-wikimedia; urgency=low
+
+  * Don't auto-link SHA1s and Gerrit change IDs
+
+ -- Ori Livneh <ori@wikimedia.org>  Fri, 15 Nov 2013 00:13:15 +0000
+
 adminbot (1.7.4) precise-wikimedia; urgency=low
 
   [ Ori Livneh ]

@@ -1,14 +1,9 @@
 import mwclient
 import datetime
-import re
 
 months = ["January", "February", "March", "April", "May", "June", "July",
 			"August", "September",
 			"October", "November", "December"]
-
-# Matches full and partial SHA1s, provided they contain at least one digit and
-# do not start with 'dbN' (to avoid matching 'db1047').
-sha1_re = re.compile(r'\b(?!db\d)[A-F0-9]+[0-9]+[A-F0-9]+\b', re.I | re.M)
 
 
 def log(config, message, project, author):
@@ -31,9 +26,7 @@ def log(config, message, project, author):
 	position = 0
 	# Um, check the date
 	now = datetime.datetime.utcnow()
-	wikitext_message = sha1_re.sub(r'{{Gerrit|\g<0>}}', message)
-	logline = "* %02d:%02d %s: %s" % (now.hour, now.minute, author,
-			wikitext_message)
+	logline = "* %02d:%02d %s: %s" % (now.hour, now.minute, author, message)
 	month = str(now.month)
 	day = str(now.day)
 	# Try extracting latest date header
