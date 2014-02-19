@@ -224,14 +224,17 @@ class logbot(ircbot.SingleServerIRCBot):
                             logging.debug("Server connection error"
                                           " when sending message")
                 if project not in projects:
-                    try:
-                        self.connection.privmsg(event.target(),
-                                            project +
-                                            " is not a valid project.")
-                    except irclib.ServerNotConnectedError, e:
-                        logging.debug("Server connection error"
-                                      " when sending message")
-                    return
+                    if "local-" + project in projects:
+                        project = "local-" + project
+                    else:
+                        try:
+                            self.connection.privmsg(event.target(),
+                                                project +
+                                                " is not a valid project.")
+                        except irclib.ServerNotConnectedError, e:
+                            logging.debug("Server connection error"
+                                          " when sending message")
+                        return
                 message = arr[2]
             else:
                 arr = line.split(" ", 1)
