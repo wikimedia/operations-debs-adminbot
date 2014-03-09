@@ -18,6 +18,7 @@ import traceback
 
 LOG_FORMAT = "%(asctime)-15s %(levelname)s: %(message)s"
 
+
 class logbot(ircbot.SingleServerIRCBot):
     def __init__(self, name, config):
         self.config = config

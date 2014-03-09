@@ -22,8 +22,8 @@ def log(config, message, project, author):
 		pagename = config.wiki_page
 
 	page = site.Pages[pagename]
-        if page.redirect:
-            page = next(p.links())
+	if page.redirect:
+		page = next(p.links())
 
 	text = page.edit()
 	lines = text.split('\n')

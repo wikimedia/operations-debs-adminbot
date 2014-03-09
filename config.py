@@ -19,10 +19,10 @@ enable_twitter = False
 # application's settings'. Finally, go back to the 'Details' tab and click
 # 'Create my access token'.
 twitter_api_params = {
-	'access_token_key': 'NNNNNNNNNN-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-	'access_token_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-	'consumer_key': 'XXXXXXXXXXXXXXXXXXXXX',
-	'consumer_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+	'access_token_key': 'NNNNNNNNNN-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',  # noqa
+	'access_token_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',       # noqa
+	'consumer_key': 'XXXXXXXXXXXXXXXXXXXXX',                                   # noqa
+	'consumer_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',            # noqa
 }
 
 # Channels to join
