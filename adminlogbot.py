@@ -74,10 +74,7 @@ class logbot(ircbot.SingleServerIRCBot):
             stat = os.stat(cache_filename)
             now = time.time()
             mtime = stat.st_mtime
-            if mtime > now - 300:
-                return False
-            else:
-                return True
+            return not (mtime > now - 300)
         else:
             return True
 
