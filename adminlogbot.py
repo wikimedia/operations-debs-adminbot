@@ -83,6 +83,49 @@ class logbot(ircbot.SingleServerIRCBot):
         for target in self.config.targets:
             con.join(target)
 
+    def get_projects(self, event, force_reload=False):
+        projects = []
+        try:
+            cache_filename = '%s/%s-projects_json.cache' %\
+                             (self.config.cachedir, self.name)
+        except AttributeError:
+            cache_filename = '/var/lib/adminbot/%s-project.cache' %\
+                             self.name
+        cache_stale = self.is_stale(cache_filename)
+        if not cache_stale and not force_reload:
+            project_cache_file = open(cache_filename,
+                                      'r')
+            project_cache = project_cache_file.read()
+            project_cache_file.close()
+            projects = project_cache.split(',')
+        else:
+            project_cache_file = open(cache_filename, 'w+')
+            ldapSupportLib = ldapsupportlib.LDAPSupportLib()
+            base = ldapSupportLib.getBase()
+            ds = ldapSupportLib.connect()
+            try:
+                projectdata = ds.search_s(self.config.project_rdn +
+                                          "," + base,
+                                          ldap.SCOPE_SUBTREE,
+                                          "(objectclass=groupofnames)")
+                if not projectdata:
+                    self.connection.privmsg(event.target(),
+                                        "Can't contact LDAP"
+                                        " for project list.")
+                for obj in projectdata:
+                    projects.append(obj[1]["cn"][0])
+
+                project_cache_file.write(','.join(projects))
+            except Exception:
+                try:
+                    self.connection.privmsg(event.target(),
+                                        "Error reading project"
+                                        " list from LDAP.")
+                except irclib.ServerNotConnectedError, e:
+                    logging.debug("Server connection error"
+                                  " when sending message")
+        return projects
+
     def on_pubmsg(self, con, event):
         if event.target() not in self.config.targets:
             return
@@ -182,57 +225,17 @@ class logbot(ircbot.SingleServerIRCBot):
                     logging.debug("Server connection error"
                                   " when sending message")
                 project = arr[1]
-                try:
-                    cache_filename = '%s/%s-users_json.cache' %\
-                                     (self.config.cachedir, self.name)
-                except AttributeError:
-                    cache_filename = '/var/lib/adminbot/%s-project.cache' %\
-                                     self.name
-                cache_stale = self.is_stale(cache_filename)
-                if not cache_stale:
-                    project_cache_file = open(cache_filename,
-                                              'r')
-                    project_cache = project_cache_file.read()
-                    project_cache_file.close()
-                    projects = project_cache.split(',')
-                if cache_stale:
-                    project_cache_file = open(cache_filename, 'w+')
-                    ldapSupportLib = ldapsupportlib.LDAPSupportLib()
-                    base = ldapSupportLib.getBase()
-                    ds = ldapSupportLib.connect()
-                    try:
-                        projects = []
-                        projectdata = ds.search_s(self.config.project_rdn +
-                                                  "," + base,
-                                                  ldap.SCOPE_SUBTREE,
-                                                  "(objectclass=groupofnames)")
-                        if not projectdata:
-                            self.connection.privmsg(event.target(),
-                                                "Can't contact LDAP"
-                                                " for project list.")
-                        for obj in projectdata:
-                            projects.append(obj[1]["cn"][0])
-                        project_cache_file.write(','.join(projects))
-                    except Exception:
-                        try:
-                            self.connection.privmsg(event.target(),
-                                                "Error reading project"
-                                                " list from LDAP.")
-                        except irclib.ServerNotConnectedError, e:
-                            logging.debug("Server connection error"
-                                          " when sending message")
+                projects = self.get_projects(event)
+
                 if project not in projects:
-                    if "local-" + project in projects:
-                        project = "local-" + project
-                    else:
-                        try:
-                            self.connection.privmsg(event.target(),
-                                                project +
-                                                " is not a valid project.")
-                        except irclib.ServerNotConnectedError, e:
-                            logging.debug("Server connection error"
-                                          " when sending message")
-                        return
+                    try:
+                        self.connection.privmsg(event.target(),
+                                            project +
+                                            " is not a valid project.")
+                    except irclib.ServerNotConnectedError, e:
+                        logging.debug("Server connection error"
+                                      " when sending message")
+                    return
                 message = arr[2]
             else:
                 arr = line.split(" ", 1)
@@ -268,6 +271,8 @@ parser = argparse.ArgumentParser(description='IRC log bot.',
                                         ' in /etc/adminbot.')
 parser.add_argument('--config', dest='confarg', type=str,
                     help='config file that describes a single logbot')
+parser.add_argument('--listprojects', dest='listprojects', action='store_true',
+                    help='For unit testing, list available projects')
 args = parser.parse_args()
 
 bots = []
@@ -325,6 +330,13 @@ if enable_projects:
 
     sys.path.append('/usr/local/sbin/')
     import ldapsupportlib
+
+if args.listprojects:
+    for bot in bots:
+        logging.debug("For bot %s" % bot.name)
+        for proj in bot.get_projects(None, True):
+            logging.debug("   %s" % proj)
+    exit(0)
 
 for bot in bots:
     logging.debug("'%s' starting" % bot.name)
