@@ -115,6 +115,19 @@ class logbot(ircbot.SingleServerIRCBot):
                 for obj in projectdata:
                     projects.append(obj[1]["cn"][0])
 
+
+                if self.config.service_group_rdn:
+                    sgdata = ds.search_s(self.config.service_group_rdn +
+                                              "," + base,
+                                              ldap.SCOPE_SUBTREE,
+                                              "(objectclass=groupofnames)")
+                    if not sgdata:
+                        self.connection.privmsg(event.target(),
+                                            "Can't contact LDAP"
+                                            " for service group list.")
+                    for obj in sgdata:
+                        projects.append(obj[1]["cn"][0])
+
                 project_cache_file.write(','.join(projects))
             except Exception:
                 try:

@@ -5,6 +5,9 @@ enable_projects = False
 # Relative DN of where the projects live
 project_rdn = "ou=projects"
 
+# Relative DN of where service groups live
+service_group_rdn = "ou=servicegroups"
+
 # Log messages to identica
 enable_identica = False
 
