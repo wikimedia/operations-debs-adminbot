@@ -1,3 +1,9 @@
+adminbot (1.7.6) precise-wikimedia; urgency=low
+
+  * Support logging for labs service groups.
+
+ -- Andrew Bogott <abogott@wikimedia.org>  Mon, 14 Jul 2014 20:19:15 +0000
+
 adminbot (1.7.5) precise-wikimedia; urgency=low
 
   * Don't auto-link SHA1s and Gerrit change IDs
