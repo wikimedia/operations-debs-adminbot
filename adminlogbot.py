@@ -32,6 +32,9 @@ class logbot(ircbot.SingleServerIRCBot):
         kwargs.update(ssl=True)
         ircbot.SingleServerIRCBot.connect(self, *args, **kwargs)
 
+    def get_version(self):
+        return 'Wikimedia Server Admin Log bot -- https://wikitech.wikimedia.org/wiki/Morebots'
+
     def get_cloak(self, source):
         if re.search("/", source) and re.search("@", source):
             return source.split("@")[1]
