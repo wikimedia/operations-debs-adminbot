@@ -22,10 +22,10 @@ enable_twitter = False
 # application's settings'. Finally, go back to the 'Details' tab and click
 # 'Create my access token'.
 twitter_api_params = {
-	'access_token_key': 'NNNNNNNNNN-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',  # noqa
-	'access_token_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',       # noqa
-	'consumer_key': 'XXXXXXXXXXXXXXXXXXXXX',                                   # noqa
-	'consumer_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',            # noqa
+    'access_token_key': 'NNNNNNNNNN-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',  # noqa
+    'access_token_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',       # noqa
+    'consumer_key': 'XXXXXXXXXXXXXXXXXXXXX',                                   # noqa
+    'consumer_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',            # noqa
 }
 
 # Channels to join
@@ -92,12 +92,12 @@ identica_password = ""
 check_users = False
 
 # A semantic query to use to search the wiki for a trust list; example:
-#	user_query = ("[[IRC Nick::+]] or [[IRC Cloak::+]]|?IRC Nick|?IRC Cloak
+#   user_query = ("[[IRC Nick::+]] or [[IRC Cloak::+]]|?IRC Nick|?IRC Cloak
 #                 "|limit=500|format=json")
 user_query = ""
 
 # The query path URL; example:
-#	wiki_query_path = "/wiki/Special:Ask/"
+#   wiki_query_path = "/wiki/Special:Ask/"
 wiki_query_path = ""
 
 # Whether we "warn" or "error" if the user isn't in the trust list
