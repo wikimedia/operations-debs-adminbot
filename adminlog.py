@@ -53,6 +53,7 @@ def log(config, message, project, author):
 		if not re.search('\[\[Category:' + config.wiki_category + '\]\]', text):
 			lines.append('<noinclude>[[Category:' +
 					config.wiki_category + ']]</noinclude>')
+
 	page.save('\n'.join(lines), "%s (%s)" % (message, author))
 
 	micro_update = ("%s: %s" % (author, message))[:140]
@@ -67,3 +68,6 @@ def log(config, message, project, author):
 		import twitter
 		twitter_api = twitter.Api(**config.twitter_api_params)
 		twitter_api.PostUpdate(micro_update)
+
+	revdata = site.api('query', prop='info', inprop='url', revids=page.revision)
+	return revdata['query']['pages'].values()[0]['canonicalurl']

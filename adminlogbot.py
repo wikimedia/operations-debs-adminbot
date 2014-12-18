@@ -263,17 +263,20 @@ class logbot(ircbot.SingleServerIRCBot):
                 project = ""
                 message = arr[1]
             try:
-                adminlog.log(self.config, message, project, author)
+                pageurl = adminlog.log(self.config, message, project, author)
                 if author in self.config.title_map:
                     title = self.config.title_map[author]
                 else:
                     title = "Master"
                 try:
                     self.connection.privmsg(event.target(),
-                                        "Logged the message, %s" % title)
-                except irclib.ServerNotConnectedError:
+                        "Logged the message at {url}, {author}".format(
+                            url=pageurl, author=title
+                        )
+                    )
+                except irclib.ServerNotConnectedError, e:
                     logging.debug("Server connection error"
-                                  " when sending message")
+                            " when sending message: %r" % e)
             except Exception:
                 logging.exception('Failed to log message')
 
