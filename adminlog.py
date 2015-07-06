@@ -23,7 +23,7 @@ def log(config, message, project, author):
 
 	page = site.Pages[pagename]
 	if page.redirect:
-		page = next(p.links())
+		page = next(page.links())
 
 	text = page.edit()
 	lines = text.split('\n')
@@ -31,6 +31,7 @@ def log(config, message, project, author):
 	# Um, check the date
 	now = datetime.datetime.utcnow()
 	logline = "* %02d:%02d %s: %s" % (now.hour, now.minute, author, message)
+	year = str(now.year)
 	month = str(now.month)
 	day = str(now.day)
 	# Try extracting latest date header
@@ -38,12 +39,13 @@ def log(config, message, project, author):
 	for line in lines:
 		position += 1
 		if line.startswith(header):
-			undef, month, day, undef = line.split(" ", 3)
+			undef, year, month, day, undef = line.split(" ", 4)
 			break
-	if months[now.month - 1] != month or now.day != int(day):
+	if now.year != int(year) or months[
+		now.month - 1] != month or now.day != int(day):
 		lines.insert(0, "")
 		lines.insert(0, logline)
-		lines.insert(0, "%s %s %d %s" % (header, months[now.month - 1],
+		lines.insert(0, "%s %d %s %d %s" % (header, now.year, months[now.month - 1],
 			now.day, header))
 	else:
 		lines.insert(position, logline)

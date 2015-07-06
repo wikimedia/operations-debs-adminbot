@@ -13,8 +13,6 @@ import sys
 import time
 import urllib
 
-import traceback
-
 
 LOG_FORMAT = "%(asctime)-15s %(levelname)s: %(message)s"
 
@@ -33,7 +31,8 @@ class logbot(ircbot.SingleServerIRCBot):
         ircbot.SingleServerIRCBot.connect(self, *args, **kwargs)
 
     def get_version(self):
-        return 'Wikimedia Server Admin Log bot -- https://wikitech.wikimedia.org/wiki/Morebots'
+        return ('Wikimedia Server Admin Log bot -- '
+            'https://wikitech.wikimedia.org/wiki/Morebots')
 
     def get_cloak(self, source):
         if re.search("/", source) and re.search("@", source):
@@ -118,12 +117,10 @@ class logbot(ircbot.SingleServerIRCBot):
                 for obj in projectdata:
                     projects.append(obj[1]["cn"][0])
 
-
                 if self.config.service_group_rdn:
                     sgdata = ds.search_s(self.config.service_group_rdn +
-                                              "," + base,
-                                              ldap.SCOPE_SUBTREE,
-                                              "(objectclass=groupofnames)")
+                        "," + base, ldap.SCOPE_SUBTREE,
+                        "(objectclass=groupofnames)")
                     if not sgdata:
                         self.connection.privmsg(event.target(),
                                             "Can't contact LDAP"
@@ -137,7 +134,7 @@ class logbot(ircbot.SingleServerIRCBot):
                     self.connection.privmsg(event.target(),
                                         "Error reading project"
                                         " list from LDAP.")
-                except irclib.ServerNotConnectedError, e:
+                except irclib.ServerNotConnectedError:
                     logging.debug("Server connection error"
                                   " when sending message")
         return projects
@@ -169,7 +166,7 @@ class logbot(ircbot.SingleServerIRCBot):
                 try:
                     self.connection.privmsg(event.target(),
                                         "To log a message, type !log <msg>.")
-                except irclib.ServerNotConnectedError, e:
+                except irclib.ServerNotConnectedError:
                     logging.debug("Server connection error "
                                   "when sending message")
         elif line.lower().startswith("!log "):
@@ -222,7 +219,7 @@ class logbot(ircbot.SingleServerIRCBot):
                                                 " to the trust list"
                                                 " or your user page.")
                             return
-                    except irclib.ServerNotConnectedError, e:
+                    except irclib.ServerNotConnectedError:
                         logging.debug("Server connection error"
                                       " when sending message")
             if self.config.enable_projects:
@@ -237,7 +234,7 @@ class logbot(ircbot.SingleServerIRCBot):
                         self.connection.privmsg(event.target(),
                                             "Message missing. Nothing logged.")
                         return
-                except irclib.ServerNotConnectedError, e:
+                except irclib.ServerNotConnectedError:
                     logging.debug("Server connection error"
                                   " when sending message")
                 project = arr[1]
@@ -248,7 +245,7 @@ class logbot(ircbot.SingleServerIRCBot):
                         self.connection.privmsg(event.target(),
                                             project +
                                             " is not a valid project.")
-                    except irclib.ServerNotConnectedError, e:
+                    except irclib.ServerNotConnectedError:
                         logging.debug("Server connection error"
                                       " when sending message")
                     return
@@ -259,7 +256,7 @@ class logbot(ircbot.SingleServerIRCBot):
                     try:
                         self.connection.privmsg(event.target(),
                                             "Message missing. Nothing logged.")
-                    except irclib.ServerNotConnectedError, e:
+                    except irclib.ServerNotConnectedError:
                         logging.debug("Server connection error"
                                       " when sending message")
                     return
@@ -274,7 +271,7 @@ class logbot(ircbot.SingleServerIRCBot):
                 try:
                     self.connection.privmsg(event.target(),
                                         "Logged the message, %s" % title)
-                except irclib.ServerNotConnectedError, e:
+                except irclib.ServerNotConnectedError:
                     logging.debug("Server connection error"
                                   " when sending message")
             except Exception:

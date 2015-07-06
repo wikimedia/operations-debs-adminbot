@@ -7,6 +7,7 @@ from sys import version_info
 
 if version_info[0] < 3:
     from urllib import urlencode
+    assert urlencode
 else:
     from urllib.parse import urlencode
 
