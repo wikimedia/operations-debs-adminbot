@@ -1,3 +1,9 @@
+adminbot (1.7.8) trusty-wikimedia; urgency=low
+
+  * Rebuild for trusty
+
+ -- Daniel Zahn <dzahn@wikimedia.org>  Wed, 8 Jul 2015 16:44:23 +0000
+
 adminbot (1.7.7) precise-wikimedia; urgency=low
 
   * Addded year to log output (by Elee, T85803)
