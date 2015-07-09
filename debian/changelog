@@ -1,3 +1,10 @@
+adminbot (1.7.9) precise-wikimedia; urgency=low
+
+  * Added URL to bot IRC message
+  * Added extended description to debian/control
+
+ -- Merlijn van Deen <valhallasw@arctus.nl>  Thu, 9 Jul 2015 06:54:00 +0000
+
 adminbot (1.7.8) trusty-wikimedia; urgency=low
 
   * Rebuild for trusty

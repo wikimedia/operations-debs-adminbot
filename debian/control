@@ -11,3 +11,5 @@ Depends: ${misc:Depends}, ${python:Depends}, python-irclib, python-mwclient, pyt
 Recommends: python-twitter
 Architecture: all
 Description: Logging on command for IRC and Mediawiki Software
+ adminbot (aka morebots) is a Python server admin log updatin' bot.
+ See https://wikitech.wikimedia.org/wiki/Morebots for more information.
