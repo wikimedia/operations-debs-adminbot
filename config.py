@@ -64,6 +64,9 @@ wiki_user = ""
 # Password of wiki bot user
 wiki_pass = ""
 
+# Whether to use a bot flag or not
+wiki_bot = True
+
 # LDAP domain to use, if needed
 wiki_domain = ""
 

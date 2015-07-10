@@ -53,7 +53,11 @@ def log(config, message, project, author):
             lines.append('<noinclude>[[Category:' +
                     config.wiki_category + ']]</noinclude>')
 
-    page.save('\n'.join(lines), "%s (%s)" % (message, author))
+    page.save(
+        '\n'.join(lines),
+        "%s (%s)" % (message, author),
+        bot=getattr(config, 'wiki_bot', True)
+    )
 
     micro_update = ("%s: %s" % (author, message))[:140]
 
