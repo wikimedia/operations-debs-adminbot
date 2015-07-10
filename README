@@ -6,3 +6,20 @@ Dependencies:
 Optional dependencies:
         python-twitter (v1+): https://launchpad.net/python-twitter
 
+How to build (example for WMF production):
+
+    ssh copper.eqiad.wmnet (or the node that includes "role package::builder")
+    git clone https://gerrit.wikimedia.org/r/p/operations/debs/adminbot
+    cd adminbot
+    debuild -us -uc
+    ls ../adminbot_*
+
+How to import in APT repo (example for WMF production):
+
+    # copy all the files (.deb .dsc .tar.gz .build .changes .dsc) to the repo server
+    scp adminbot_* carbon.eqiad.wmnet:/srv/wikimedia/incoming/
+    sudo su - ; cd /srv/wikimedia/incoming/
+    # include using the .changes file, not the .deb
+    # this should go into "main", not "universe". make sure distro version is correct
+    reprepro -C main include precise-wikimedia adminbot_1.7.10_amd64.changes
+
