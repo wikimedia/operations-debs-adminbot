@@ -30,25 +30,21 @@ def log(config, message, project, author):
     # Um, check the date
     now = datetime.datetime.utcnow()
     logline = "* %02d:%02d %s: %s" % (now.hour, now.minute, author, message)
-    year = str(now.year)
-    month = str(now.month)
-    day = str(now.day)
+
     # Try extracting latest date header
     header = "=" * config.wiki_header_depth
     for line in lines:
         position += 1
         if line.startswith(header):
-            undef, year, month, day, undef = line.split(" ", 4)
+            try:
+                header_date = [int(x) for x in line.strip(" =").split("-")]
+            except ValueError:
+                header_date = None
             break
-    if (now.year != int(year) or
-            months[now.month - 1] != month or
-            now.day != int(day)):
-
+    if header_date != (now.year, now.month, now.day):
         lines.insert(0, "")
         lines.insert(0, logline)
-        lines.insert(0,
-            "%s %d %s %d %s" % (header, now.year, months[now.month - 1],
-                now.day, header))
+        lines.insert(0, now.strftime("{0} %Y-%m-%d {0}".format(header)))
     else:
         lines.insert(position, logline)
     if config.wiki_category:
