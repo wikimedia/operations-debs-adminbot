@@ -52,7 +52,6 @@ case "$1" in
       chmod 755 /usr/lib/adminbot/adminlogbot.py
       chmod 644 /usr/lib/adminbot/adminlog.py
       chmod 644 /usr/lib/adminbot/statusnet.py
-      chmod 644 /usr/lib/adminbot/README
     fi
     ;;
 
