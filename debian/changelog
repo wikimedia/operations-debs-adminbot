@@ -1,3 +1,11 @@
+adminbot (1.7.11) precise-wikimedia; urgency=low
+
+  * Change-Id: I89d69890b62c - Fix new section creation for each edit (BryanDavis)
+  * Change-Id: Iffc6cc636fc6 - add docs how to build and upload to repo (DZahn)
+  * Change-Id: If009179ac12f - fix the README file dpkg error on install (DZahn)
+
+ -- Daniel Zahn <dzahn@wikimedia.org>  Sat, 11 Jul 2015 04:36:23 +0000
+
 adminbot (1.7.10) precise-wikimedia; urgency=low
 
   * Fixed date parsing of headers
