@@ -3,6 +3,8 @@ adminbot (1.7.12) precise-wikimedia; urgency=low
   * Fix section creation on pages without headers
   * Report errors on IRC instead of not responding to the !log
 
+ -- Merlijn van Deen <valhallasw@arctus.nl>  Thu, 6 Aug 2015 23:50:00 +0200
+
 adminbot (1.7.11) precise-wikimedia; urgency=low
 
   * Change-Id: I89d69890b62c - Fix new section creation for each edit (BryanDavis)
