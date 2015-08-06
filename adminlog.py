@@ -33,6 +33,7 @@ def log(config, message, project, author):
 
     # Try extracting latest date header
     header = "=" * config.wiki_header_depth
+    header_date = None
     for line in lines:
         position += 1
         if line.startswith(header):
