@@ -277,8 +277,16 @@ class logbot(ircbot.SingleServerIRCBot):
                 except irclib.ServerNotConnectedError, e:
                     logging.debug("Server connection error"
                             " when sending message: %r" % e)
-            except Exception:
-                logging.exception('Failed to log message')
+            except Exception as e:
+                logging.exception('Failed to log message: %r' % e)
+                try:
+                    self.connection.privmsg(
+                        event.target(),
+                        "An exception was raised while trying to log "
+                        "your message, {author}".format(author=title)
+                    )
+                except Exception:
+                    pass
 
 
 parser = argparse.ArgumentParser(description='IRC log bot.',
