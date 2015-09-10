@@ -269,7 +269,8 @@ class logbot(ircbot.SingleServerIRCBot):
                 else:
                     title = "Master"
                 try:
-                    self.connection.privmsg(event.target(),
+                    self.connection.privmsg(
+                        event.target(),
                         "Logged the message at {url}, {author}".format(
                             url=pageurl, author=title
                         )
@@ -310,7 +311,7 @@ if args.confarg is not None:
     conf = imp.load_source(module, confdir + "/" + fname)
 
     # discard if this isn't actually a bot config file
-    if not 'targets' in conf.__dict__:
+    if 'targets' not in conf.__dict__:
         logging.error("%s does not appear to be a valid bot config." %
                       args.confarg)
         exit(1)
@@ -334,7 +335,7 @@ else:
             conf = imp.load_source(module, confdir + "/" + fname)
 
             # discard if this isn't actually a bot config file
-            if not 'targets' in conf.__dict__:
+            if 'targets' not in conf.__dict__:
                 continue
 
             bots.append(logbot(module, conf))
