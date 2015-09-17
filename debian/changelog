@@ -1,3 +1,11 @@
+adminbot (1.7.13) trusty-wikimedia; urgency=low
+
+  * Build for trusty (T109947)
+  * Change-Id: I86e088570493fb82eb0 - Lint fixes (Hashar)
+  * Change-Id: I15b10d7a1a9a6cad11a - Add tox and flake8 (Hashar)
+
+ -- Daniel Zahn <dzahn@wikimedia.org>  Thu, 17 Sep 2015 11:36:23 +0000
+
 adminbot (1.7.12) precise-wikimedia; urgency=low
 
   * Fix section creation on pages without headers
